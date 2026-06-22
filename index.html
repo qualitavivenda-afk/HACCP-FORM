@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Check List HACCP - Impianti di Produzione"/>
+<title>Check List HACCP - Impianti di Produzione</title>
+<style>
+:root{--navy:#003C80;--navy-lt:#e8eef7;--green:#2e7d32;--green-lt:#e8f5e9;--red:#c62828;--red-lt:#ffebee;--amber:#e65100;--amber-lt:#fff3e0;--border:#dee2e6;--text:#1a1a2e;--muted:#6c757d;--bg:#f0f2f5}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px}
+.app{max-width:600px;margin:0 auto;padding:0 0 24px}
+.hdr{background:var(--navy);color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hdr-title{font-size:14px;font-weight:700;line-height:1.3}
+.hdr-sub{font-size:11px;opacity:.7;margin-top:1px}
+.nav{display:flex;gap:4px}
+.nb{border:1px solid rgba(255,255,255,.4);border-radius:6px;padding:5px 11px;font-size:12px;cursor:pointer;background:transparent;color:#fff;font-weight:600}
+.nb.on{background:#fff;color:var(--navy)}
+.meta{background:#fff;border-bottom:1px solid var(--border);padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mf label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:3px}
+.mf input{border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:13px;width:100%;background:#fafafa;color:var(--text)}
+.mf input:focus{outline:none;border-color:var(--navy)}
+.kpis{background:#fff;border-bottom:1px solid var(--border);padding:10px 14px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.kpi{background:#f5f5f5;border-radius:8px;padding:8px 6px;text-align:center}
+.kpi.kg{background:var(--green-lt)}.kpi.kr{background:var(--red-lt)}
+.kpi-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--muted)}
+.kpi-v{font-size:18px;font-weight:800;margin-top:2px;color:var(--text)}
+.kpi.kg .kpi-v{color:var(--green)}.kpi.kr .kpi-v{color:var(--red)}
+.bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.bar-txt{font-size:12px;color:var(--muted);line-height:1.5}
+.bar-txt strong{color:var(--text);font-size:13px}
+.pill-nc{display:inline-block;background:var(--amber-lt);border:1px solid #ffcc80;border-radius:20px;padding:2px 8px;font-size:11px;color:var(--amber);font-weight:700;margin-top:4px}
+.btn-p{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn-p:hover{background:#002a5e}
+.btn-s{background:#fff;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;cursor:pointer}
+.errbox{margin:0 10px 10px;background:var(--red-lt);border:1px solid #ef9a9a;border-radius:8px;padding:12px 14px;font-size:12px;color:var(--red)}
+.errbox ul{padding-left:16px;margin-top:6px}
+.errbox li{margin-bottom:3px}
+.secs{padding:0 10px;display:flex;flex-direction:column;gap:8px}
+.sec{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;border-bottom:1px solid transparent}
+.sec-hdr.open{border-bottom-color:var(--border)}
+.sec-left{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+.sec-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.3}
+.sec-code{font-size:10px;color:var(--muted);margin-top:1px}
+.tog{border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:11px;background:#f5f5f5;cursor:pointer;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.badge{display:inline-flex;align-items:center;border-radius:5px;padding:3px 7px;font-size:10px;font-weight:800;letter-spacing:.4px;border:1px solid;white-space:nowrap;flex-shrink:0}
+.b-prp{background:#e3f2fd;color:#0d47a1;border-color:#90caf9}
+.b-ccp{background:#fff8e1;color:#e65100;border-color:#ffe082}
+.b-trc{background:#f3e5f5;color:#6a1b9a;border-color:#ce93d8}
+.b-nc{background:var(--red-lt);color:var(--red);border-color:#ef9a9a}
+.b-item{background:#f5f5f5;color:var(--muted);border-color:var(--border);font-size:11px}
+.items{padding:8px 10px 10px}
+.item{border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:8px;background:#fff}
+.item.crit{border-color:#ef9a9a;background:var(--red-lt)}
+.item.warn{border-color:#ffe082;background:var(--amber-lt)}
+.item-toprow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.item-badges{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.choices{display:flex;gap:6px;flex-shrink:0}
+.ch{border:1.5px solid var(--border);border-radius:8px;width:44px;height:38px;font-size:13px;font-weight:800;cursor:pointer;background:#fff;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.ch:active{transform:scale(.95)}
+.ch-c.on{background:var(--green-lt);border-color:var(--green);color:var(--green)}
+.ch-nc.on{background:var(--red-lt);border-color:var(--red);color:var(--red)}
+.ch-na.on{background:#eeeeee;border-color:#9e9e9e;color:#424242}
+.item-text{font-size:14px;line-height:1.65;color:var(--text);margin-bottom:10px}
+.note-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between}
+.note-warnlbl{color:var(--amber);font-size:11px;font-weight:700}
+textarea{border:1px solid var(--border);border-radius:8px;padding:9px 10px;font-size:13px;width:100%;resize:vertical;font-family:inherit;background:#fafafa;color:var(--text);line-height:1.5;min-height:64px}
+textarea:focus{outline:none;border-color:var(--navy);background:#fff}
+textarea.tw{border-color:#ffb300!important}
+.ccp-alert{margin-top:8px;background:#fff;border:1px solid #ef9a9a;border-left:4px solid var(--red);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--red)}
+.sum-wrap{padding:0 10px;margin-top:10px}
+.sum-sec{border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:7px;background:#fff}
+.sum-sec.crit{border-color:#ef9a9a;background:var(--red-lt)}
+.sum-sec.warn{border-color:#ffe082;background:var(--amber-lt)}
+.sum-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.sum-mini{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.sm-item .l{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase}
+.sm-item .v{font-size:16px;font-weight:800}
+.tr{color:var(--red)}.ta{color:var(--amber)}.tg{color:var(--green)}
+.verdict{background:var(--navy-lt);border-left:4px solid var(--navy);border-radius:6px;padding:10px 12px;font-size:13px;margin-top:10px}
+.verdict .l{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.verdict .v{font-weight:800;font-size:14px}
+.rep-wrap{padding:0 10px;margin-top:10px}
+.rep-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px}
+.rep-hdr{border-bottom:3px solid var(--navy);padding-bottom:12px;margin-bottom:14px}
+.rep-ht{font-size:16px;font-weight:800;color:var(--navy)}
+.rep-hs{font-size:11px;color:var(--muted);margin-top:3px}
+.rep-kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px}
+.rkpi{background:#f5f5f5;border-radius:8px;padding:10px 8px;text-align:center}
+.rkpi .l{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted)}
+.rkpi .v{font-size:20px;font-weight:800;margin-top:2px}
+.rkpi.kr{background:var(--red-lt)}.rkpi.kr .v{color:var(--red)}
+.rep-verdict{background:var(--navy-lt);border-left:4px solid var(--navy);border-radius:4px;padding:10px 12px;font-size:13px;margin-bottom:14px}
+.rep-stitle{font-size:13px;font-weight:800;color:var(--navy);margin:14px 0 6px;border-bottom:1px solid var(--border);padding-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--navy-lt);color:var(--navy);padding:7px 8px;text-align:left;font-weight:800;font-size:10px;text-transform:uppercase}
+td{padding:8px;border-top:1px solid var(--border);font-size:12px}
+tr:nth-child(even) td{background:#fafafa}
+.nc-card{border:1px solid #ef9a9a;border-radius:9px;padding:10px 12px;background:var(--red-lt);margin-bottom:7px}
+.nc-card.prp{border-color:#ffe082;background:var(--amber-lt)}
+.sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.sign-box{border:1px solid var(--border);border-radius:9px;padding:12px}
+.sign-box .l{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted)}
+.sign-line{border-top:1px solid var(--border);margin-top:40px}
+@media print{
+  .nb,.tog,.btn-p,.btn-s{display:none!important}
+  .hdr{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .item{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+var SECS=[
+  {c:"PRP_01",t:"PRP Op 01 - Ricevimento derrate",tp:"PRP",o:1,items:[
+    {n:1,tx:"Le merci scaricate presentano confezioni integre, assenza di alterazioni di colore/odore, shelf life conforme e temperatura idonea? Viene apposto il timbro sul DDT?"},
+    {n:2,tx:"Il vano del mezzo di trasporto e' pulito e privo di promiscuita' di merci?"},
+    {n:3,tx:"L'etichettatura delle merci ricevute e' conforme alla normativa vigente (lotto, scadenza/TMC, allergeni)?"},
+  ]},
+  {c:"PRP_02",t:"PRP Op 02 - Stoccaggio",tp:"PRP",o:2,items:[
+    {n:4,tx:"Gli alimenti sono conservati secondo il metodo F.I.F.O., alle temperature previste dalla Tabella 08 e senza superamento della scadenza/TMC?"},
+    {n:5,tx:"Sono assenti imballi in cartone/legno in cella/frigo? Si utilizzano pedane lavabili?"},
+    {n:6,tx:"Sono fisicamente separati gli alimenti per allergici/biologici da quelli convenzionali? Sono assenti prodotti ricongelati?"},
+  ]},
+  {c:"PRP_03_04",t:"PRP Op 03/04 - Lavorazioni e confezionamento",tp:"PRP",o:3,items:[
+    {n:7,tx:"Le attrezzature e le superfici vengono disinfettate tra una lavorazione e l'altra? Sono separate le lavorazioni pulite da quelle sporche?"},
+    {n:8,tx:"Lo scongelamento avviene in frigorifero a +1/+4 gradi C con contenitori forati ed etichetta prodotto semilavorato?"},
+    {n:9,tx:"Sono rispettate le Istruzioni operative specifiche per tipologia di alimento (carni, legumi, insalata, uova, ecc.)?"},
+    {n:10,tx:"Sono rispettate le temperature di confezionamento (maggiore di +75 gradi C per i caldi, minore di +6 gradi C per i freddi)? Il personale usa mestoli e pinze?"},
+  ]},
+  {c:"PRP_05",t:"PRP Op 05 - Distribuzione",tp:"PRP",o:4,items:[
+    {n:11,tx:"Sono esposti menu' del giorno, tabella allergeni e composizione pietanze? Vengono consegnate le diete speciali agli utenti destinatari?"},
+    {n:12,tx:"I tavoli condimenti sono puliti e riforniti? Il personale usa mestoli e pinze per il porzionamento?"},
+  ]},
+  {c:"PRP_06_07_08",t:"PRP Op 06/07/08 - Trasporto",tp:"PRP",o:5,items:[
+    {n:13,tx:"I contenitori di trasporto sono chiusi, puliti, privi di odori anomali e correttamente etichettati (destinatario, alimento, quantita')?"},
+    {n:14,tx:"I DDT sono compilati correttamente? Le schede di pulizia RCQ 29 sono presenti su ogni autoveicolo?"},
+  ]},
+  {c:"PRP_09",t:"PRP Op 09 - Allergie e intolleranze",tp:"PRP",o:6,items:[
+    {n:15,tx:"Sono presenti menu' specifici per allergici/intolleranti? E' rispettata la privacy della documentazione sanitaria?"},
+    {n:16,tx:"Sono presenti kit di pentolame dedicati ed esclusivi per celiaci e allergici al nichel?"},
+  ]},
+  {c:"PRP_10_11_12",t:"PRP Op 10/11/12 - Pulizie e rifiuti",tp:"PRP",o:7,items:[
+    {n:17,tx:"Lo stato di pulizia di pavimenti, pareti, attrezzature fisse (scaffali, piani di lavoro) e di conservazione (celle, frigo, banchi caldi) e' adeguato?"},
+    {n:18,tx:"Lo stato di pulizia di coltelli, taglieri, pentolame, utensili e automezzi e' adeguato? I contenitori di trasporto sono in buono stato?"},
+    {n:19,tx:"Il Piano di Sanificazione (mod. RCQ 19) e' esposto, compilato e applicato? I prodotti chimici sono presenti, identificati e usati correttamente?"},
+    {n:20,tx:"I rifiuti alimentari sono rimossi tempestivamente? Il carrello rifiuti viene disinfettato dopo l'uso? Sono assenti prodotti di pulizia in cucina?"},
+  ]},
+  {c:"CCP",t:"Gestione CCP - da CCP 01 a CCP 06",tp:"CCP",o:99,items:[
+    {n:21,tx:"Le merci scaricate presentano temperatura conforme (Timbro su DDT), a quanto indicato dall'All. C del D.P.R. 327/80 (CCP 01)? E' presente ed esposta la Tabella Temperature ammesse al ricevimento?",crit:true},
+    {n:22,tx:"Viene rilevata giornalmente, registrata in modo corretto la temperatura di frigoriferi/celle sul mod. RCQ 05? La temperatura e' conforme (CCP 02)?",crit:true},
+    {n:23,tx:"A fine cottura/abbattimento/riscaldamento, viene effettuato il controllo e la registrazione della temperatura al cuore del prodotto sul mod. RCQ 23? La temperatura e' conforme (CCP 03-04)?",crit:true},
+    {n:24,tx:"Viene rilevata e registrata la temperatura per i pasti caldi che superano 1 ora di mantenimento sul mod. RCQ 27? La temperatura e' conforme (CCP 05)?",crit:true},
+    {n:25,tx:"Vengono rilevate le temperature di ricevimento dei pasti trasportati caldi/freddi/refrigerati, sul mod. RCQ 15? Sono conformi? La temperatura e' conforme (CCP 06)?",crit:true},
+  ]},
+  {c:"TRACC",t:"Gestione Tracciabilita' e Rintracciabilita'",tp:"TRACCIABILITA",o:100,items:[
+    {n:26,tx:"Gli alimenti senza lotto/scadenza/TMC vengono etichettati con la data di arrivo delle merci?"},
+    {n:27,tx:"Vengono riportati giornalmente i lotti/scadenza/TMC di tutti i prodotti utilizzati sul Libro dei lotti (mod. RCQ 02)?"},
+    {n:28,tx:"La compilazione sul Libro dei lotti (mod. RCQ 02) e' corretta?"},
+  ]},
+];
+
+var ALL=[];
+SECS.forEach(function(s){s.items.forEach(function(it){ALL.push({sc:s.c,st:s.t,stp:s.tp,n:it.n,tx:it.tx,crit:s.tp==='CCP'||!!it.crit,k:s.c+'-'+it.n});});});
+
+var S={view:'CL',site:'Centro Cottura',date:todayISO(),compiler:'Operatore',rev:'Rev. 01',attempted:false,open:{},ans:{}};
+SECS.forEach(function(s){S.open[s.c]=true;});
+ALL.forEach(function(it){S.ans[it.k]={esito:'',note:''};});
+
+function todayISO(){var d=new Date(),p=function(x){return String(x).padStart(2,'0');};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());}
+function fPct(n){return isFinite(n)&&n>0?n.toFixed(1)+'%':'0%';}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function lbl(sc,n){return sc+' - '+n;}
+
+function calcStats(){
+  var C=0,NC=0,NA=0,empty=0,ccpNC=0,bm={};
+  ALL.forEach(function(it){
+    var a=S.ans[it.k],es=a?a.esito:'';
+    if(!es)empty++;if(es==='C')C++;if(es==='NC')NC++;if(es==='NA')NA++;
+    if(it.stp==='CCP'&&es==='NC')ccpNC++;
+    if(!bm[it.sc]){var sec=null;SECS.forEach(function(s){if(s.c===it.sc)sec=s;});bm[it.sc]={c:it.sc,t:it.st,tp:it.stp,o:sec?sec.o:0,tot:0,C:0,NC:0,NA:0,ccpNC:0};}
+    var r=bm[it.sc];r.tot++;if(es==='C')r.C++;if(es==='NC')r.NC++;if(es==='NA')r.NA++;if(it.stp==='CCP'&&es==='NC')r.ccpNC++;
+  });
+  var d=C+NC;
+  var bySec=Object.values(bm).sort(function(a,b){return a.o-b.o;});
+  return{C:C,NC:NC,NA:NA,empty:empty,ccpNC:ccpNC,pct:d>0?C/d*100:0,total:ALL.length,bySec:bySec};
+}
+function validate(){
+  var errs=[];
+  ALL.forEach(function(it){var a=S.ans[it.k],es=a?a.esito:'';
+    if(!es)errs.push({k:it.k,msg:'Esito mancante'});
+    if(es==='NC'&&!(a&&a.note||'').trim())errs.push({k:it.k,msg:'Note obbligatorie per NC'});
+  });return errs;
+}
+function verdict(st){
+  if(st.ccpNC>0)return{tx:'Sistema NON conforme - NC su CCP',cls:'tr'};
+  if(st.NC>0)return{tx:'Sistema parzialmente conforme - NC su PRP',cls:'ta'};
+  return{tx:'Sistema conforme',cls:'tg'};
+}
+var BC={PRP:'b-prp',CCP:'b-ccp',TRACCIABILITA:'b-trc'};
+
+function render(){
+  var st=calcStats(),errs=validate(),v=verdict(st);
+  var ncList=ALL.filter(function(it){return S.ans[it.k]&&S.ans[it.k].esito==='NC';});
+  var h='';
+
+  h+='<div class="hdr">';
+  h+='<div><div class="hdr-title">Check List - Impianti di Produzione</div><div class="hdr-sub">Sistema HACCP - 28 item</div></div>';
+  h+='<div class="nav">';
+  [['CL','CL'],['SUM','Riepilogo'],['REP','Report']].forEach(function(x){
+    h+='<button class="nb'+(S.view===x[0]?' on':'')+'" onclick="sv(\''+x[0]+'\')">'+x[1]+'</button>';
+  });
+  h+='</div></div>';
+
+  h+='<div class="meta">';
+  h+='<div class="mf"><label>Struttura / Sito</label><input value="'+esc(S.site)+'" oninput="S.site=this.value"/></div>';
+  h+='<div class="mf"><label>Data</label><input type="date" value="'+S.date+'" oninput="S.date=this.value"/></div>';
+  h+='<div class="mf"><label>Compilatore</label><input value="'+esc(S.compiler)+'" oninput="S.compiler=this.value"/></div>';
+  h+='<div class="mf"><label>Piano HACCP</label><input value="'+esc(S.rev)+'" oninput="S.rev=this.value"/></div>';
+  h+='</div>';
+
+  h+='<div class="kpis">';
+  h+='<div class="kpi"><div class="kpi-l">Totale</div><div class="kpi-v">'+st.total+'</div></div>';
+  h+='<div class="kpi'+(st.C>0?' kg':'')+'"><div class="kpi-l">C</div><div class="kpi-v">'+st.C+'</div></div>';
+  h+='<div class="kpi'+(st.NC>0?' kr':'')+'"><div class="kpi-l">NC</div><div class="kpi-v">'+st.NC+'</div></div>';
+  h+='<div class="kpi"><div class="kpi-l">NA</div><div class="kpi-v">'+st.NA+'</div></div>';
+  h+='<div class="kpi"><div class="kpi-l">Conf.%</div><div class="kpi-v">'+fPct(st.pct)+'</div></div>';
+  h+='<div class="kpi'+(st.ccpNC>0?' kr':'')+'"><div class="kpi-l">NC CCP</div><div class="kpi-v">'+st.ccpNC+'</div></div>';
+  h+='</div>';
+
+  if(S.view==='CL'){
+    h+='<div class="bar"><div class="bar-txt">Compilati: <strong>'+(st.total-st.empty)+'/'+st.total+'</strong> - Mancanti: <strong>'+st.empty+'</strong>';
+    if(st.ccpNC>0)h+='<br><span class="pill-nc">! CCP non conformi: '+st.ccpNC+'</span>';
+    h+='</div><button class="btn-p" onclick="closeCL()">Chiudi</button></div>';
+
+    if(S.attempted&&errs.length>0){
+      h+='<div class="errbox"><strong>Correzioni necessarie ('+errs.length+')</strong><ul>';
+      errs.slice(0,5).forEach(function(er){var it=null;ALL.forEach(function(x){if(x.k===er.k)it=x;});h+='<li>Item '+(it?it.n:'')+': '+er.msg+'</li>';});
+      if(errs.length>5)h+='<li>...e altre '+(errs.length-5)+' segnalazioni.</li>';
+      h+='</ul></div>';
+    }
+
+    h+='<div class="secs">';
+    SECS.forEach(function(sec){
+      var isOpen=S.open[sec.c];
+      h+='<div class="sec"><div class="sec-hdr'+(isOpen?' open':'')+'" onclick="tog(\''+sec.c+'\')">';
+      h+='<div class="sec-left"><span class="badge '+(BC[sec.tp]||'b-item')+'">'+sec.tp+'</span>';
+      h+='<div><div class="sec-name">'+esc(sec.t)+'</div><div class="sec-code">'+sec.c+'</div></div></div>';
+      h+='<button class="tog" onclick="event.stopPropagation();tog(\''+sec.c+'\')">'+(isOpen?'Nascondi':'Mostra')+'</button>';
+      h+='</div>';
+      if(isOpen){
+        h+='<div class="items">';
+        sec.items.forEach(function(item){
+          var k=sec.c+'-'+item.n;
+          var a=S.ans[k]||{};var es=a.esito||'';
+          var isCCP=sec.tp==='CCP',isCrit=isCCP&&es==='NC';
+          var mE=S.attempted&&!es,mN=S.attempted&&es==='NC'&&!(a.note||'').trim();
+          h+='<div id="item-'+k+'" class="item'+(isCrit?' crit':mE||mN?' warn':'')+'"><div class="item-toprow"><div class="item-badges">';
+          h+='<span class="badge b-item">'+lbl(sec.c,item.n)+'</span>';
+          if(isCCP)h+='<span class="badge b-ccp">CCP</span>';
+          if(isCrit)h+='<span class="badge b-nc">NC critica</span>';
+          h+='</div><div class="choices">';
+          h+='<button class="ch ch-c'+(es==='C'?' on':'')+'" onclick="setE(\''+k+'\',\'C\')">C</button>';
+          h+='<button class="ch ch-nc'+(es==='NC'?' on':'')+'" onclick="setE(\''+k+'\',\'NC\')">NC</button>';
+          h+='<button class="ch ch-na'+(es==='NA'?' on':'')+'" onclick="setE(\''+k+'\',\'NA\')">NA</button>';
+          h+='</div></div>';
+          h+='<div class="item-text">'+esc(item.tx)+'</div>';
+          h+='<div><div class="note-lbl"><span>Note'+(es==='NC'?' - obbligatorie':'')+'</span>';
+          if(mN)h+='<span class="note-warnlbl">Obbligatorie per NC</span>';
+          if(mE)h+='<span class="note-warnlbl">Seleziona un esito</span>';
+          h+='</div><textarea rows="2" class="'+(mN?'tw':'')+'" oninput="setN(\''+k+'\',this.value)" placeholder="'+(es==='NC'?'Descrivi la NC: temperatura rilevata, evidenza, ecc.':'Note facoltative')+'">'+esc(a.note||'')+'</textarea></div>';
+          if(isCCP&&es==='NC')h+='<div class="ccp-alert"><strong>CCP non conforme</strong> - attivare immediatamente le azioni correttive e registrare le evidenze.</div>';
+          h+='</div>';
+        });
+        h+='</div>';
+      }
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+
+  if(S.view==='SUM'){
+    h+='<div class="bar" style="margin-bottom:10px"><div class="bar-txt">Conformita\': <strong>'+fPct(st.pct)+'</strong> - NC: <strong>'+st.NC+'</strong></div>';
+    h+='<div style="display:flex;gap:6px"><button class="btn-s" onclick="sv(\'CL\')">Checklist</button><button class="btn-p" onclick="sv(\'REP\')">Report</button></div></div>';
+    h+='<div class="sum-wrap">';
+    st.bySec.forEach(function(s){
+      var d=s.C+s.NC,p=d>0?s.C/d*100:0;
+      var esito=s.ccpNC>0?'NON CONFORME (CCP)':s.NC>0?'Parz. conforme':'Conforme';
+      h+='<div class="sum-sec'+(s.ccpNC>0?' crit':s.NC>0?' warn':'')+'"><div class="sum-row"><span class="badge '+(BC[s.tp]||'b-item')+'">'+s.tp+'</span><strong style="font-size:13px">'+esc(s.t)+'</strong></div>';
+      h+='<div class="sum-mini"><div class="sm-item"><div class="l">Item</div><div class="v">'+s.tot+'</div></div><div class="sm-item"><div class="l">NC</div><div class="v'+(s.NC>0?' tr':'')+'">'+s.NC+'</div></div><div class="sm-item"><div class="l">Conf.</div><div class="v">'+fPct(p)+'</div></div></div>';
+      h+='<div style="margin-top:7px;font-size:12px">Esito: <strong class="'+(s.ccpNC>0?'tr':s.NC>0?'ta':'tg')+'">'+esito+'</strong></div></div>';
+    });
+    h+='<div class="verdict"><div class="l">Valutazione finale</div><div class="v '+v.cls+'">'+v.tx+'</div></div></div>';
+  }
+
+  if(S.view==='REP'){
+    h+='<div class="rep-wrap"><div class="rep-card"><div class="rep-hdr">';
+    h+='<div class="rep-ht">Report di Ispezione HACCP</div>';
+    h+='<div class="rep-hs">Check List Generale Impianti di Produzione - 28 item</div>';
+    h+='<div class="rep-hs" style="margin-top:4px">'+esc(S.site)+' - '+S.date+' - '+esc(S.compiler)+' - '+esc(S.rev)+'</div>';
+    h+='<div style="display:flex;gap:6px;margin-top:10px"><button class="btn-s" onclick="window.print()">Stampa / PDF</button><button class="btn-p" onclick="sv(\'SUM\')">Chiudi</button></div></div>';
+    h+='<div class="rep-kpis"><div class="rkpi"><div class="l">Totale item</div><div class="v">'+st.total+'</div></div><div class="rkpi"><div class="l">Conformita\'%</div><div class="v">'+fPct(st.pct)+'</div></div><div class="rkpi'+(st.ccpNC>0?' kr':'')+'"><div class="l">NC su CCP</div><div class="v">'+st.ccpNC+'</div></div></div>';
+    h+='<div class="rep-verdict">Valutazione finale: <strong class="'+v.cls+'">'+v.tx+'</strong></div>';
+    h+='<div class="rep-stitle">Riepilogo per sezione</div><div style="overflow-x:auto"><table><thead><tr><th>Sezione</th><th>Tipo</th><th>Tot</th><th>NC</th><th>Conf.%</th><th>Esito</th></tr></thead><tbody>';
+    st.bySec.forEach(function(s){
+      var d=s.C+s.NC,p=d>0?s.C/d*100:0;
+      var esito=s.ccpNC>0?'NON CONF.(CCP)':s.NC>0?'Parz.conf.':'Conforme';
+      h+='<tr><td>'+esc(s.t)+'</td><td><span class="badge '+(BC[s.tp]||'b-item')+'">'+s.tp+'</span></td><td>'+s.tot+'</td><td class="'+(s.NC>0?'tr':'')+'">'+s.NC+'</td><td>'+fPct(p)+'</td><td class="'+(s.ccpNC>0?'tr':s.NC>0?'ta':'tg')+'">'+esito+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+    h+='<div class="rep-stitle">Dettaglio non conformita\'</div>';
+    if(ncList.length===0){
+      h+='<div style="background:var(--green-lt);border:1px solid #a5d6a7;border-radius:8px;padding:10px 12px;font-size:13px;color:var(--green)"><strong>Nessuna non conformita\' rilevata.</strong></div>';
+    } else {
+      ncList.forEach(function(x){
+        var a=S.ans[x.k];
+        h+='<div class="nc-card'+(x.stp==='CCP'?'':' prp')+'"><div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap">';
+        h+='<span class="badge b-item">Item '+x.n+'</span><span class="badge '+(BC[x.stp]||'b-item')+'">'+x.stp+'</span>';
+        if(x.stp==='CCP')h+='<span class="badge b-nc">Critica HACCP</span>';
+        h+='</div><div style="font-size:13px;line-height:1.6;margin-bottom:7px">'+esc(x.tx)+'</div>';
+        h+='<div style="font-size:12px;color:var(--muted)">Note: <strong style="color:var(--text)">'+esc(a?a.note:'---')+'</strong></div></div>';
+      });
+    }
+    var hasCCPnc=ncList.some(function(x){return x.stp==='CCP';});
+    if(hasCCPnc)h+='<div style="background:var(--red-lt);border-left:4px solid var(--red);border-radius:4px;padding:10px 12px;margin-top:8px;font-size:12px;color:var(--red)"><strong>Azione urgente:</strong> attivare le azioni correttive e registrare le evidenze sul mod. RCQ.</div>';
+    h+='<div class="sign-grid"><div class="sign-box"><div class="l">Firma operatore</div><div class="sign-line"></div></div><div class="sign-box"><div class="l">Firma resp. HACCP</div><div class="sign-line"></div></div></div>';
+    h+='</div></div><div style="text-align:center;font-size:10px;color:var(--muted);margin-top:8px;padding-bottom:4px">Sistema HACCP - Check List Generale Impianti di Produzione</div>';
+  }
+
+  document.getElementById('app').innerHTML=h;
+}
+
+function sv(v){S.view=v;render();}
+function tog(c){S.open[c]=!S.open[c];render();}
+function setE(k,v){S.ans[k].esito=v;render();}
+function setN(k,v){S.ans[k].note=v;}
+function closeCL(){
+  S.attempted=true;
+  var errs=validate();
+  if(errs.length===0){S.view='SUM';render();}
+  else{render();setTimeout(function(){var el=document.getElementById('item-'+errs[0].k);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},50);}
+}
+render();
+</script>
+</body>
+</html>
