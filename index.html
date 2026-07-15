@@ -161,7 +161,7 @@ var SECS=[
     {n:19,tx:"Il Piano di Sanificazione (mod. RCQ 19) e' esposto, compilato e applicato? I prodotti chimici sono presenti, identificati e usati correttamente?"},
     {n:20,tx:"I rifiuti alimentari sono rimossi tempestivamente? Il carrello rifiuti viene disinfettato dopo l'uso? Sono assenti prodotti di pulizia in cucina?"},
   ]},
-  {c:"CCP",t:"Gestione CCP - da CCP 01 a CCP 06",tp:"CCP",o:99,items:[
+  {c:"CCP",t:"Gestione CCP",tp:"CCP",o:99,items:[
     {n:21,tx:"Le merci scaricate presentano temperatura conforme (Timbro su DDT), a quanto indicato dall'All. C del D.P.R. 327/80 (CCP 01)? E' presente ed esposta la Tabella Temperature ammesse al ricevimento?",crit:true},
     {n:22,tx:"Viene rilevata giornalmente, registrata in modo corretto la temperatura di frigoriferi/celle sul mod. RCQ 05? La temperatura e' conforme (CCP 02)?",crit:true},
     {n:23,tx:"A fine cottura/abbattimento/riscaldamento, viene effettuato il controllo e la registrazione della temperatura al cuore del prodotto sul mod. RCQ 23? La temperatura e' conforme (CCP 03-04)?",crit:true},
@@ -174,12 +174,11 @@ var SECS=[
     {n:28,tx:"La compilazione sul Libro dei lotti (mod. RCQ 02) e' corretta?"},
   ]},
 ];
-
 var ALL=[];
 SECS.forEach(function(s){s.items.forEach(function(it){ALL.push({sc:s.c,st:s.t,stp:s.tp,n:it.n,tx:it.tx,crit:s.tp==='CCP'||!!it.crit,k:s.c+'-'+it.n});});});
 
-var S={view:'CL',site:'Centro Cottura',date:todayISO(),compiler:'Operatore',rev:'Rev. 01',attempted:false,open:{},ans:{}};
-SECS.forEach(function(s){S.open[s.c]=true;});
+var S={view:'CL',site:'',date:todayISO(),compiler:'',rev:'Rev. 01',responsabile:'',osaCapoArea:'',cdc:'',attempted:false,open:{},ans:{},confirmAction:null};
+SECS.forEach(function(s){S.open[s.c]=false;});
 ALL.forEach(function(it){S.ans[it.k]={esito:'',note:''};});
 
 function todayISO(){var d=new Date(),p=function(x){return String(x).padStart(2,'0');};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());}
@@ -214,9 +213,13 @@ function verdict(st){
 }
 var BC={PRP:'b-prp',CCP:'b-ccp',TRACCIABILITA:'b-trc'};
 
+function secOf(k){return k.substring(0,k.lastIndexOf('-'));}
+
 function render(){
   var st=calcStats(),errs=validate(),v=verdict(st);
   var ncList=ALL.filter(function(it){return S.ans[it.k]&&S.ans[it.k].esito==='NC';});
+  var errBySec={};
+  errs.forEach(function(er){var sc=secOf(er.k);errBySec[sc]=(errBySec[sc]||0)+1;});
   var h='';
 
   h+='<div class="hdr">';
@@ -231,7 +234,9 @@ function render(){
   h+='<div class="mf"><label>Struttura / Sito</label><input value="'+esc(S.site)+'" oninput="S.site=this.value"/></div>';
   h+='<div class="mf"><label>Data</label><input type="date" value="'+S.date+'" oninput="S.date=this.value"/></div>';
   h+='<div class="mf"><label>Compilatore</label><input value="'+esc(S.compiler)+'" oninput="S.compiler=this.value"/></div>';
-  h+='<div class="mf"><label>Piano HACCP</label><input value="'+esc(S.rev)+'" oninput="S.rev=this.value"/></div>';
+  h+='<div class="mf"><label>Responsabile impianto</label><input value="'+esc(S.responsabile)+'" oninput="S.responsabile=this.value"/></div>';
+  h+='<div class="mf"><label>OSA/Capo Area</label><input value="'+esc(S.osaCapoArea)+'" oninput="S.osaCapoArea=this.value"/></div>';
+  h+='<div class="mf"><label>CDC</label><input value="'+esc(S.cdc)+'" oninput="S.cdc=this.value"/></div>';
   h+='</div>';
 
   h+='<div class="kpis">';
@@ -246,7 +251,17 @@ function render(){
   if(S.view==='CL'){
     h+='<div class="bar"><div class="bar-txt">Compilati: <strong>'+(st.total-st.empty)+'/'+st.total+'</strong> - Mancanti: <strong>'+st.empty+'</strong>';
     if(st.ccpNC>0)h+='<br><span class="pill-nc">! CCP non conformi: '+st.ccpNC+'</span>';
-    h+='</div><button class="btn-p" onclick="closeCL()">Chiudi</button></div>';
+    h+='</div><div style="display:flex;gap:6px"><button class="btn-s" onclick="askConfirm(\'conform\')">Imposta tutto conforme</button><button class="btn-s" onclick="askConfirm(\'reset\')">Azzera</button><button class="btn-p" onclick="closeCL()">Chiudi</button></div></div>';
+
+    if(S.confirmAction){
+      var ctx=S.confirmAction==='conform'
+        ?{msg:'Impostare tutti i '+ALL.length+' item come Conforme? Le note esistenti verranno cancellate.',btn:'Si\', imposta tutto conforme'}
+        :{msg:'Azzerare tutte le risposte della checklist? Operazione non reversibile.',btn:'Si\', azzera'};
+      h+='<div class="errbox" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">';
+      h+='<span>'+ctx.msg+'</span>';
+      h+='<div style="display:flex;gap:6px"><button class="btn-s" onclick="cancelConfirm()">Annulla</button><button class="btn-p" onclick="doConfirm()">'+ctx.btn+'</button></div>';
+      h+='</div>';
+    }
 
     if(S.attempted&&errs.length>0){
       h+='<div class="errbox"><strong>Correzioni necessarie ('+errs.length+')</strong><ul>';
@@ -261,6 +276,7 @@ function render(){
       h+='<div class="sec"><div class="sec-hdr'+(isOpen?' open':'')+'" onclick="tog(\''+sec.c+'\')">';
       h+='<div class="sec-left"><span class="badge '+(BC[sec.tp]||'b-item')+'">'+sec.tp+'</span>';
       h+='<div><div class="sec-name">'+esc(sec.t)+'</div><div class="sec-code">'+sec.c+'</div></div></div>';
+      if(S.attempted&&errBySec[sec.c])h+='<span class="badge b-nc">'+errBySec[sec.c]+' da correggere</span>';
       h+='<button class="tog" onclick="event.stopPropagation();tog(\''+sec.c+'\')">'+(isOpen?'Nascondi':'Mostra')+'</button>';
       h+='</div>';
       if(isOpen){
@@ -338,7 +354,6 @@ function render(){
     }
     var hasCCPnc=ncList.some(function(x){return x.stp==='CCP';});
     if(hasCCPnc)h+='<div style="background:var(--red-lt);border-left:4px solid var(--red);border-radius:4px;padding:10px 12px;margin-top:8px;font-size:12px;color:var(--red)"><strong>Azione urgente:</strong> attivare le azioni correttive e registrare le evidenze sul mod. RCQ.</div>';
-    h+='<div class="sign-grid"><div class="sign-box"><div class="l">Firma operatore</div><div class="sign-line"></div></div><div class="sign-box"><div class="l">Firma resp. HACCP</div><div class="sign-line"></div></div></div>';
     h+='</div></div><div style="text-align:center;font-size:10px;color:var(--muted);margin-top:8px;padding-bottom:4px">Sistema HACCP - Check List Generale Impianti di Produzione</div>';
   }
 
@@ -346,6 +361,18 @@ function render(){
 }
 
 function sv(v){S.view=v;render();}
+function askConfirm(action){S.confirmAction=action;render();}
+function cancelConfirm(){S.confirmAction=null;render();}
+function doConfirm(){
+  if(S.confirmAction==='conform'){
+    ALL.forEach(function(it){S.ans[it.k]={esito:'C',note:''};});
+  } else if(S.confirmAction==='reset'){
+    ALL.forEach(function(it){S.ans[it.k]={esito:'',note:''};});
+    S.attempted=false;
+  }
+  S.confirmAction=null;
+  render();
+}
 function tog(c){S.open[c]=!S.open[c];render();}
 function setE(k,v){S.ans[k].esito=v;render();}
 function setN(k,v){S.ans[k].note=v;}
@@ -353,7 +380,11 @@ function closeCL(){
   S.attempted=true;
   var errs=validate();
   if(errs.length===0){S.view='SUM';render();}
-  else{render();setTimeout(function(){var el=document.getElementById('item-'+errs[0].k);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},50);}
+  else{
+    errs.forEach(function(er){S.open[secOf(er.k)]=true;});
+    render();
+    setTimeout(function(){var el=document.getElementById('item-'+errs[0].k);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},50);
+  }
 }
 render();
 
